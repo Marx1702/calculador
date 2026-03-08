@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Calculador de costos de proyecto - Dashboard">
+  <title>Calculador de Costos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header class="app-header">
+    <h1 class="header-title">Calculador de Costos</h1>
+    <div class="header-user">
+      <span id="userName" class="user-name"></span>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="app-main">
+
+    <!-- ============== SECTION: ELEMENTOS ============== -->
+    <section id="secElementos" class="app-section active">
+      <div class="section-header">
+        <h2>📦 Elementos</h2>
+        <div class="filter-bar">
+          <select id="filterMaterial" class="select-filter">
+            <option value="">Todos los materiales</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Elements List -->
+      <div id="elementsList" class="cards-list">
+        <div class="empty-state">
+          <p>No hay elementos aún</p>
+          <p class="empty-hint">Tocá + para agregar uno</p>
+        </div>
+      </div>
+
+      <!-- Total Bar -->
+      <div class="total-bar">
+        <span>Total:</span>
+        <span id="elementsTotal" class="total-amount">$0.00</span>
+      </div>
+
+      <!-- FAB Add Element -->
+      <button class="fab" id="fabAddElement" title="Agregar Elemento">+</button>
+
+      <!-- Modal: Add/Edit Element -->
+      <div id="modalElement" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="modalElementTitle">Nuevo Elemento</h3>
+            <button class="modal-close" id="closeModalElement">&times;</button>
+          </div>
+          <form id="elementForm">
+            <input type="hidden" id="elementId">
+            <div class="form-group">
+              <label for="elNombre">Nombre</label>
+              <input type="text" id="elNombre" placeholder="Ej: Tornillos M6" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="elPrecio">Precio unitario ($)</label>
+                <input type="number" id="elPrecio" step="0.01" min="0" placeholder="0.00" required>
+              </div>
+              <div class="form-group">
+                <label for="elCantidad">Cantidad</label>
+                <input type="number" id="elCantidad" step="1" min="1" placeholder="1" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="elMaterial">Material</label>
+              <select id="elMaterial" class="select-filter">
+                <option value="">Sin material</option>
+              </select>
+            </div>
+            <div class="form-preview">
+              <span>Subtotal:</span>
+              <span id="elSubtotal" class="preview-amount">$0.00</span>
+            </div>
+            <button type="submit" class="btn-primary">Guardar</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== SECTION: MATERIALES ============== -->
+    <section id="secMateriales" class="app-section">
+      <div class="section-header">
+        <h2>🎨 Materiales</h2>
+      </div>
+
+      <div id="materialsList" class="cards-list">
+        <div class="empty-state">
+          <p>No hay materiales</p>
+        </div>
+      </div>
+
+      <!-- FAB Add Material -->
+      <button class="fab" id="fabAddMaterial" title="Agregar Material">+</button>
+
+      <!-- Modal: Add Material -->
+      <div id="modalMaterial" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Nuevo Material</h3>
+            <button class="modal-close" id="closeModalMaterial">&times;</button>
+          </div>
+          <form id="materialForm">
+            <div class="form-group">
+              <label for="matNombre">Nombre del material</label>
+              <input type="text" id="matNombre" placeholder="Ej: Acero inoxidable" required>
+            </div>
+            <button type="submit" class="btn-primary">Guardar</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== SECTION: PRESUPUESTO ============== -->
+    <section id="secPresupuesto" class="app-section">
+      <div class="section-header">
+        <h2>💲 Presupuesto</h2>
+      </div>
+
+      <!-- Budget Builder -->
+      <div class="budget-builder">
+        <div class="form-group">
+          <label for="budgetNombre">Nombre del presupuesto</label>
+          <input type="text" id="budgetNombre" placeholder="Ej: Mueble living cliente">
+        </div>
+
+        <!-- Select Elements -->
+        <div class="budget-section-card">
+          <h4 class="budget-section-title">📦 Seleccionar Elementos</h4>
+          <p class="budget-section-hint">Elegí los materiales/elementos para este presupuesto</p>
+          <div id="budgetElementsList" class="budget-elements-list">
+            <p class="empty-hint">Cargá elementos primero en la sección Elementos</p>
+          </div>
+          <div class="budget-line">
+            <span>Costo materiales:</span>
+            <span id="budgetCostoMateriales" class="budget-line-amount">$0.00</span>
+          </div>
+        </div>
+
+        <!-- Time Cost -->
+        <div class="budget-section-card">
+          <h4 class="budget-section-title">⏱ Tiempo de Trabajo</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="budgetCostoHora">Costo/hora ($)</label>
+              <input type="number" id="budgetCostoHora" step="0.01" min="0" placeholder="Costo/hora">
+            </div>
+            <div class="form-group">
+              <label for="budgetHoras">Horas</label>
+              <input type="number" id="budgetHoras" step="1" min="0" placeholder="Horas">
+            </div>
+          </div>
+          <div class="budget-line">
+            <span>Costo tiempo:</span>
+            <span id="budgetCostoTiempo" class="budget-line-amount">$0.00</span>
+          </div>
+        </div>
+
+        <!-- Markup -->
+        <div class="budget-section-card">
+          <h4 class="budget-section-title">📊 Ganancia</h4>
+          <div class="markup-control">
+            <label for="budgetPorcentaje">Porcentaje de ganancia</label>
+            <div class="slider-row">
+              <input type="range" id="budgetPorcentaje" min="0" max="200" value="30" class="range-slider">
+              <input type="number" id="budgetPorcentajeNum" min="0" max="500" value="30" class="pct-input">%
+            </div>
+          </div>
+          <div class="budget-line">
+            <span>Ganancia:</span>
+            <span id="budgetGanancia" class="budget-line-amount">$0.00</span>
+          </div>
+        </div>
+
+        <!-- FINAL PRICE -->
+        <div class="budget-final">
+          <div class="budget-final-row">
+            <span>Subtotal (materiales + tiempo):</span>
+            <span id="budgetSubtotal">$0.00</span>
+          </div>
+          <div class="budget-final-row budget-final-total">
+            <span>💲 PRECIO FINAL:</span>
+            <span id="budgetPrecioFinal">$0.00</span>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btnSaveBudget">Guardar Presupuesto</button>
+      </div>
+
+      <!-- Saved Budgets -->
+      <div class="section-header" style="margin-top:24px;">
+        <h3>📋 Presupuestos Guardados</h3>
+      </div>
+      <div id="budgetsList" class="cards-list">
+        <div class="empty-state">
+          <p>No hay presupuestos guardados</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== SECTION: PERFIL ============== -->
+    <section id="secPerfil" class="app-section">
+      <div class="section-header">
+        <h2>👤 Mi Perfil</h2>
+      </div>
+      <div class="profile-card">
+        <div class="profile-avatar" id="profileAvatar">U</div>
+        <h3 id="profileName">Usuario</h3>
+        <p id="profileEmail" class="profile-email">email@ejemplo.com</p>
+      </div>
+      <div class="profile-summary">
+        <div class="summary-item">
+          <span class="summary-number" id="summaryElements">0</span>
+          <span class="summary-label">Elementos</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-number" id="summaryMaterials">0</span>
+          <span class="summary-label">Materiales</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-number" id="summaryBudgets">0</span>
+          <span class="summary-label">Presupuestos</span>
+        </div>
+      </div>
+      <button class="btn-logout" id="btnLogout">Cerrar Sesión</button>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-section="secElementos" id="navElementos">
+      <span class="nav-icon">📦</span>
+      <span class="nav-label">Elementos</span>
+    </button>
+    <button class="nav-item" data-section="secMateriales" id="navMateriales">
+      <span class="nav-icon">🎨</span>
+      <span class="nav-label">Materiales</span>
+    </button>
+    <button class="nav-item" data-section="secPresupuesto" id="navPresupuesto">
+      <span class="nav-icon">💲</span>
+      <span class="nav-label">Presupuesto</span>
+    </button>
+    <button class="nav-item" data-section="secPerfil" id="navPerfil">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">Perfil</span>
+    </button>
+  </nav>
+
+  <!-- Toast Container -->
+  <div id="toastContainer"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
