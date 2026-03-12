@@ -1,11 +1,11 @@
 -- Calculador de Costos - Database Schema
 -- Importar en MySQL via phpMyAdmin o CLI
 
-CREATE DATABASE IF NOT EXISTS calculador_costos
+CREATE DATABASE IF NOT EXISTS calculador_cos
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE calculador_costos;
+USE calculador_cos;
 
 -- =====================
 -- Tabla de Usuarios
