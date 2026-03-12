@@ -375,8 +375,7 @@ function renderMaterials() {
     return '<div class="material-card" style="animation-delay: ' + (i * 0.05) + 's;">' +
       '<div class="material-info">' +
       '<span class="material-dot"></span>' +
-      '<div><div class="material-name">' + escapeHtml(mat.nombre) + '</div>' +
-      '<div class="material-count">' + count + ' elemento' + (count !== 1 ? 's' : '') + '</div></div>' +
+      '<div class="material-name">' + escapeHtml(mat.nombre) + '</div>' +
       '</div>' +
       '<button class="btn-delete-sm" onclick="handleDeleteMaterial(' + mat.id + ')" title="Eliminar">🗑️</button>' +
       '</div>';
