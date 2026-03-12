@@ -159,14 +159,40 @@ function initModals() {
   document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
     overlay.addEventListener('click', function(e) {
       if (e.target === overlay) {
-        overlay.style.display = 'none';
+        closeModal(overlay.id);
       }
     });
   });
+
+  // Handle mobile back button — close modals/confirms instead of leaving
+  window.addEventListener('popstate', function() {
+    // Close confirm dialog if open
+    var confirmOverlay = document.querySelector('.confirm-overlay');
+    if (confirmOverlay) {
+      document.body.removeChild(confirmOverlay);
+      return;
+    }
+    // Close any open modal
+    var closed = false;
+    document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+      if (overlay.style.display === 'flex') {
+        overlay.style.display = 'none';
+        closed = true;
+      }
+    });
+    // If nothing was open, push state back to prevent leaving (stay in app)
+    if (!closed) {
+      history.pushState({ app: true }, '');
+    }
+  });
+
+  // Push initial state so back button doesn't leave immediately
+  history.pushState({ app: true }, '');
 }
 
 function openModal(id) {
   document.getElementById(id).style.display = 'flex';
+  history.pushState({ modal: id }, '');
 }
 
 function closeModal(id) {
